@@ -20,6 +20,34 @@ document.addEventListener('DOMContentLoaded', () => {
         listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
         listItem.textContent = taskText;
 
+        // Add edit button
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.className = 'btn btn-primary btn-sm';
+        editButton.addEventListener('click', () => {
+            // Prompt user to enter new task text
+            Swal.fire({
+                title: 'Edit Task',
+                input: 'text',
+                inputLabel: 'New Task Description',
+                inputValue: listItem.textContent.trim(),
+                showCancelButton: true,
+                confirmButtonText: 'Update',
+                cancelButtonText: 'Cancel',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'You need to write something!';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    listItem.textContent = result.value;
+                    listItem.appendChild(editButton);
+                    listItem.appendChild(removeImage);
+                }
+            });
+        });
+
         // Add a remove image
         const removeImage = document.createElement('img');
         removeImage.src = 'remove.png'; // Path to your delete icon image
@@ -41,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (result.isConfirmed) {
                     // Remove the task if confirmed
                     taskList.removeChild(listItem);
-                    
+
                     // SweetAlert success dialog with image
                     Swal.fire({
                         title: 'Deleted!',
@@ -55,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        listItem.appendChild(editButton);
         listItem.appendChild(removeImage);
         taskList.appendChild(listItem);
 
